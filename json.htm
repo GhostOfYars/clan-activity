@@ -36,6 +36,10 @@ $(function () {
 
 	function fillGrid (){
 		console.log(data);
+		console.log(data[0].destinyUserInfo.displayName);
+		//console.log(Object.keys(data)) // ['a', 'b', 'c']
+		//console.log(Object.values(data)) // [1, 2, 3]
+		//console.log(Object.entries(data)) // [['a', 1], ['b', 2], ['c', 3]]
 /*    var data = [
         { rank: 1, company: 'Exxon Mobil', revenues: '339938.0', profits: '36130.0' },
         { rank: 2, company: 'Wal-Mart Stores', revenues: '315654.0', profits: '11231.0' },
@@ -67,7 +71,8 @@ $(function () {
     };
     obj.colModel = [
         { title: "groupId", width: 100, dataType: "integer", dataIndx: "groupId" },
-        { title: "isOnline", width: 200, dataType: "string", dataIndx: "isOnline" }
+        { title: "isOnline", width: 200, dataType: "string", dataIndx: "isOnline" },
+				{ title: "name", width: 200, dataType: "string", dataIndx: "data[0].destinyUserInfo.displayName"}
     ];
     obj.dataModel = { data: data };
     $("#grid_json").pqGrid(obj);
