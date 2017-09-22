@@ -2,7 +2,8 @@ var clan = {
 	groupId: '',
 	name: '',
 	memberCount: 0,
-	members: []
+	members: [],
+	membershipIds: []
 }
 
 var users = [];
@@ -35,10 +36,15 @@ function getClanMembers (clan) {
 		console.log('got ' + clan.members.length + ' members');
 		for (var i = 0; i < clan.members.length; i++) {
     	users.push(clan.members[i]);
+			clan.membershipIds.push(clan.members[i].destinyUserInfo.membershipId);
 		}
-		for (var i = 0; i < users.length; i++) {
+		for (var i = 0; i < 5; i++) { //switch to users.length
 			user = users[i];
+			user.characterCount = 0;
+			user.nightfalls = [];
+			console.log(user.destinyUserInfo.displayName);
 			getCharacterIds(user, users[i].destinyUserInfo.membershipId, users[i].destinyUserInfo.membershipType);
+//			debugger;
 		}
 	})
 }
@@ -51,10 +57,47 @@ function getCharacterIds (user, membershipId, membershipType) {
 			"X-API-Key": "61524efca0234043b54b290af933f1c6"
 		}
 	}).done(function(response) {
-		console.log(user.destinyUserInfo.displayName);
 		user.characterIds = response.Response.profile.data.characterIds;
 		user.characterCount = user.characterIds.length;
 		console.log(user.destinyUserInfo.displayName + ' has ' + user.characterCount + ' characters');
+		for (var i = 0; i < user.characterCount; i++) {
+			getActivityHistory(user, user.characterIds[i], 16) // get Nightfall games
+		}
+	})
+}
+
+function getActivityHistory (user, characterId, mode) {
+	$.ajax({
+		url: "https://www.bungie.net/platform/Destiny2/" + user.destinyUserInfo.membershipType +
+					"/Account/" + user.destinyUserInfo.membershipId + "/Character/" + characterId + "/Stats/Activities/?mode=" + mode,
+		dataType: "json",
+		headers: {
+			"X-API-Key": "61524efca0234043b54b290af933f1c6"
+		}
+	}).done(function(response) {
+		if (typeof response.Response.activities === "undefined") { return; }
+		for (i = 0; i < response.Response.activities.length; i++) {
+			if (response.Response.activities[i].values.completed.basic.value &&
+					playedWithClan(user.destinyUserInfo.membershipId, response.Response.activities[i].activityDetails.instanceId) ) {
+				user.nightfalls.push(response.Response.activities[i]);
+			}
+		}
+		console.log(user.destinyUserInfo.displayName + ' has completed ' + user.nightfalls.length + ' Nightfalls')
+	})
+}
+
+function playedWithClan (membershipId, instanceId) {
+	$.ajax({
+		url: "https://www.bungie.net/platform/Destiny2/Stats/PostGameCarnageReport/" + instanceId + "/",
+		dataType: "json",
+		headers: {
+			"X-API-Key": "61524efca0234043b54b290af933f1c6"
+		}
+	}).done(function(response) {
+		for (i = 0; i < response.Response.entries.length, i++) {
+			if (response.Response.entries[i])
+		}
+		debugger;
 	})
 }
 
