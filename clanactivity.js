@@ -161,7 +161,7 @@ $(document).ajaxStop(function() {
 	var obj = {};
 	obj.width = 400;
 	obj.height = 800;
-	obj.toolbar: {
+	obj.toolbar = {
                 cls: 'pq-toolbar-export',
                 items: [{
                         type: 'button',
