@@ -6,6 +6,12 @@ var clan = {
 	membershipIds: []
 }
 
+if (window.location.hostname == "") {
+	var apiKey = "61524efca0234043b54b290af933f1c6";
+} else {
+	var apiKey = "49c9c091925c471a9f4e563a96bf7375";
+}
+
 var users = [];
 var startDate = new Date();
 var endDate = new Date();
@@ -23,7 +29,7 @@ function getClanData() {
 		url: "https://www.bungie.net/platform/GroupV2/Name/The%20Risen%20Guard/1/",
 		dataType: "json",
 		headers: {
-			"X-API-Key": "61524efca0234043b54b290af933f1c6"
+			"X-API-Key": apiKey
 		}
 	}).done(function(response) {
 		if (response.ErrorCode != 1) {
@@ -48,7 +54,7 @@ function getClanMembers (clan) {
 		url: "https://www.bungie.net/platform/GroupV2/" + clan.groupId + "/Members/?currentPage=1",
 		dataType: "json",
 		headers: {
-			"X-API-Key": "61524efca0234043b54b290af933f1c6"
+			"X-API-Key": apiKey
 		}
 	}).done(function(response) {
 		if (response.ErrorCode != 1) {
@@ -84,7 +90,7 @@ function getCharacterIds (user, membershipId, membershipType) {
 		url: "https://www.bungie.net/platform/Destiny2/" + membershipType + "/Profile/" + membershipId + "/?components=100",
 		dataType: "json",
 		headers: {
-			"X-API-Key": "61524efca0234043b54b290af933f1c6"
+			"X-API-Key": apiKey
 		}
 	}).done(function(response) {
 		if (response.ErrorCode != 1) {
@@ -112,7 +118,7 @@ function getActivityHistory (user, characterId, gameMode) {
 					"/Account/" + user.destinyUserInfo.membershipId + "/Character/" + characterId + "/Stats/Activities/?mode=" + gameMode,
 		dataType: "json",
 		headers: {
-			"X-API-Key": "61524efca0234043b54b290af933f1c6"
+			"X-API-Key": apiKey
 		}
 	}).done(function(response) {
 		if (response.ErrorCode != 1) {
@@ -138,7 +144,7 @@ function playedWithClan (user, membershipId, instanceId, gameMode) {
 		url: "https://www.bungie.net/platform/Destiny2/Stats/PostGameCarnageReport/" + instanceId + "/",
 		dataType: "json",
 		headers: {
-			"X-API-Key": "61524efca0234043b54b290af933f1c6"
+			"X-API-Key": apiKey
 		}
 	}).done(function(response) {
 		if (response.ErrorCode != 1) {
