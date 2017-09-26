@@ -1,0 +1,30 @@
+.flex-container {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-flow: row wrap;
+  flex-flow: row wrap;
+  padding: 0.2em;
+}
+.statusLog{
+  margin-left: 0.2em;
+  padding: 0.2em;
+  font-size: 0.8em;
+  width: 300px;
+  height: 794px;
+  overflow: auto;
+  font-family: sans-serif;
+}
+.statusLog > .ui-widget-header {
+  padding: 2px;
+}
+.errspan{
+  color: red;
+}
+
+input {
+  margin: 0.2em;
+}
+
+body {
+  background-color: #555555;
+}

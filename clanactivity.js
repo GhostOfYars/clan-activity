@@ -85,7 +85,7 @@ function getClanMembers (clan) {
 }
 
 function getCharacterIds (user, membershipId, membershipType) {
-	$("#statusLog").append("<span>Getting characters for " + user.name + "</span><br>");
+	$("#statusLog").append("<span>Getting characters for " + user.name + "</span><br>").change();
 	$.ajax({
 		url: "https://www.bungie.net/platform/Destiny2/" + membershipType + "/Profile/" + membershipId + "/?components=100",
 		dataType: "json",
@@ -95,14 +95,14 @@ function getCharacterIds (user, membershipId, membershipType) {
 	}).done(function(response) {
 		if (response.ErrorCode != 1) {
 			console.log('something is borked getting characters for ' + user.name);
-			$("#statusLog").append("<span class='errspan'>Failed to get characters for " + user.name + "</span><br>");
+			$("#statusLog").append("<span class='errspan'>Failed to get characters for " + user.name + "</span><br>").change();
 			apiErrors.push(response);
 			return;
 		}
 		user.characterIds = response.Response.profile.data.characterIds;
 		user.characterCount = user.characterIds.length;
 		console.log(user.name + ' has ' + user.characterCount + ' characters');
-		$("#statusLog").append("<span>" + user.name + " has " + user.characterCount + " characters</span><br>");
+		$("#statusLog").append("<span>" + user.name + " has " + user.characterCount + " characters</span><br>").change();
 		for (var i = 0; i < user.characterCount; i++) {
 			getActivityHistory(user, user.characterIds[i], 16); // get Nightfall games
 			getActivityHistory(user, user.characterIds[i], 4);  // get Raids
@@ -112,7 +112,7 @@ function getCharacterIds (user, membershipId, membershipType) {
 }
 
 function getActivityHistory (user, characterId, gameMode) {
-	$("#statusLog").append("<span>Getting activities for " + user.name + "</span><br>");
+	$("#statusLog").append("<span>Getting activities for " + user.name + "</span><br>").change();
 	$.ajax({
 		url: "https://www.bungie.net/platform/Destiny2/" + user.destinyUserInfo.membershipType +
 					"/Account/" + user.destinyUserInfo.membershipId + "/Character/" + characterId + "/Stats/Activities/?mode=" + gameMode,
@@ -123,7 +123,7 @@ function getActivityHistory (user, characterId, gameMode) {
 	}).done(function(response) {
 		if (response.ErrorCode != 1) {
 			console.log('something is borked getting activity history for ' + user.name);
-			$("#statusLog").append("<span class='errspan'>Failed to get activities for " + user.name + "</span><br>");
+			$("#statusLog").append("<span class='errspan'>Failed to get activities for " + user.name + "</span><br>").change();
 			apiErrors.push(response);
 			return;
 		}
@@ -139,7 +139,7 @@ function getActivityHistory (user, characterId, gameMode) {
 }
 
 function playedWithClan (user, membershipId, instanceId, gameMode) {
-	$("#statusLog").append("<span>Getting PGCR for " + instanceId + "</span><br>");
+	$("#statusLog").append("<span>Getting PGCR for " + instanceId + "</span><br>").change();
 	$.ajax({
 		url: "https://www.bungie.net/platform/Destiny2/Stats/PostGameCarnageReport/" + instanceId + "/",
 		dataType: "json",
@@ -150,7 +150,7 @@ function playedWithClan (user, membershipId, instanceId, gameMode) {
 		if (response.ErrorCode != 1) {
 			console.log('something is borked getting pcgr for ' + user.name + ' for game id ' + instanceId);
 			$("#statusLog").append("<span class='errspan'>Failed to get PCGR for " + instanceId + "</span><br>" +
-				"<a class='errspan' href='http://destinytracker.com/d2/pgcr/'" + instanceId + ">Get report on DestinyTracker</a><br>");
+				"<a class='errspan' href='http://destinytracker.com/d2/pgcr/" + instanceId + "' target='_blank'>Get report on DestinyTracker</a><br>").change();
 			apiErrors.push(response);
 			return;
 		}
@@ -192,11 +192,17 @@ $(document).ajaxStop(function() {
 	$("#pqGrid").pqGrid("refreshDataAndView");
 });
 
+function scrollToBottom() {
+  $('#statusLog').scrollTop($('#statusLog')[0].scrollHeight);
+}
 
 $(function() {
-	$( "#dateStart" ).datepicker();
-	$( "#dateEnd" ).datepicker();
-	$( "#getStats" ).button();
+	$("#dateStart").datepicker();
+	$("#dateEnd").datepicker();
+	$("#getStats").button();
+	$("#statusLog").change(function() {
+  	scrollToBottom();
+	});
 	var obj = {};
 	obj.width = 500;
 	obj.height = 800;
