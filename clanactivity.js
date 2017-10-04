@@ -75,9 +75,16 @@ function getClanMembers (clan) {
 			user.characterCount = 0;
 			user.name = user.destinyUserInfo.displayName;
 			user.nfCount = 0;
+			user.pNFCount = 0;
+			user.ncNFCount = 0;
+			user.ncpNFCount = 0;
 			user.raidCount = 0;
+			user.pRaidCount = 0;
+			user.ncRaidCount = 0;
 			user.nightfalls = [];
+			user.pNightfalls = [];
 			user.raids = [];
+			user.pRaids = [];
 			user.trials = [];
 			getCharacterIds(user, users[i].destinyUserInfo.membershipId, users[i].destinyUserInfo.membershipType);
 		}
@@ -105,7 +112,9 @@ function getCharacterIds (user, membershipId, membershipType) {
 		$("#statusLog").append("<span>" + user.name + " has " + user.characterCount + " characters</span><br>");
 		for (var i = 0; i < user.characterCount; i++) {
 			getActivityHistory(user, user.characterIds[i], 16); // get Nightfall games
+			getActivityHistory(user, user.characterIds[i], 17); // get Prestige Nightfall games
 			getActivityHistory(user, user.characterIds[i], 4);  // get Raids
+			// getActivityHistory(user, user.characterIds[i], 4);  // eventually get Prestige Raids
 			// getActivityHistory(user, user.characterIds[i], 39); // get Trials
 		}
 	})
@@ -158,11 +167,29 @@ function playedWithClan (user, membershipId, instanceId, gameMode) {
 			if (response.Response.entries.length == 1 ||
 					$.inArray(response.Response.entries[i].player.destinyUserInfo.membershipId, clan.membershipIds) == -1) {
 				console.log('pWC: Fireteam had non-clan members');
+				switch(gameMode) { // non-clan games
+		    case 4:
+		      user.ncRaids.push(response.Response);
+					user.ncRaidCount++;
+		      break;
+		    case 16:
+		      user.ncNightfalls.push(response.Response);
+					user.ncNFCount++;
+		      break;
+				case 17:
+		      user.ncpNightfalls.push(response.Response);
+					user.ncpNFCount++;
+	      	break;
+				/*case 39:
+					user.trials.push(response.Response);
+					break;*/
+		    default:
+				}
 				return;
 			}
 		}
 		console.log('pWC: Fireteam was all clan members');
-		switch(gameMode) {
+		switch(gameMode) {  // clan games
     case 4:
       user.raids.push(response.Response);
 			user.raidCount++;
@@ -171,6 +198,10 @@ function playedWithClan (user, membershipId, instanceId, gameMode) {
       user.nightfalls.push(response.Response);
 			user.nfCount++;
       break;
+		case 17:
+			user.pNightfalls.push(response.Response);
+			user.pNFCount++;
+			break;
 		/*case 39:
 			user.trials.push(response.Response);
 			break;*/
@@ -207,9 +238,13 @@ $(function() {
 		all: true
 	}
 	obj.colModel = [
-		{title:"Name", dataIndx: "name", width:200, dataType:"string"},
-		{title:"NFs", dataIndx: "nfCount", width:100, dataType:"integer"},
-		{title:"Raids", dataIndx: "raidCount", width:100, dataType:"integer"}
+		{title:"Name", dataIndx: "name", width:100, dataType:"string"},
+		{title:"Clan NFs", dataIndx: "nfCount", width:60, dataType:"integer"},
+		{title:"Clan P NFs", dataIndx: "pnfCount", width:60, dataType:"integer"},
+		{title:"Non-clan NFs", dataIndx: "ncNFCount", width:60, dataType:"integer"},
+		{title:"Non-clan P NFs", dataIndx: "ncpNFCount", width:60, dataType:"integer"},
+		{title:"Clan Raids", dataIndx: "raidCount", width:60, dataType:"integer"},
+		{title:"Non-clan Raids", dataIndx: "ncRaidCount", width:60, dataType:"integer"},
 	];
 	obj.dataModel = {data:users};
 	$("#pqGrid").pqGrid( obj );
