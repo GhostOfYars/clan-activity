@@ -81,10 +81,15 @@ function getClanMembers (clan) {
 			user.raidCount = 0;
 			user.pRaidCount = 0;
 			user.ncRaidCount = 0;
+			user.ncpRaidCount = 0;
 			user.nightfalls = [];
+			user.ncNightfalls = [];
 			user.pNightfalls = [];
+			user.ncpNightfalls = [];
 			user.raids = [];
+			user.ncRaids = [];
 			user.pRaids = [];
+			user.ncpRaids = [];
 			user.trials = [];
 			getCharacterIds(user, users[i].destinyUserInfo.membershipId, users[i].destinyUserInfo.membershipType);
 		}
@@ -140,6 +145,7 @@ function getActivityHistory (user, characterId, gameMode) {
 		for (var i = 0; i < response.Response.activities.length; i++) {
 			var activityDate = new Date(response.Response.activities[i].period);
 			if (response.Response.activities[i].values.completed.basic.value &&
+					response.Response.activities[i].values.completionReason.basic.value == 0 &&
 					startDate < activityDate && endDate > activityDate) {
 				playedWithClan(user, user.destinyUserInfo.membershipId, response.Response.activities[i].activityDetails.instanceId, gameMode);
 			}
@@ -235,7 +241,7 @@ $(function() {
   	scrollToBottom();
 	});
 	var obj = {};
-	obj.width = 500;
+	obj.width = 600;
 	obj.height = 800;
 	obj.editable = false;
 	obj.selectionModel = {
@@ -244,9 +250,9 @@ $(function() {
 		all: true
 	}
 	obj.colModel = [
-		{title:"Name", dataIndx: "name", width:100, dataType:"string"},
+		{title:"Name", dataIndx: "name", width:120, dataType:"string"},
 		{title:"Clan NFs", dataIndx: "nfCount", width:60, dataType:"integer"},
-		{title:"Clan P NFs", dataIndx: "pnfCount", width:60, dataType:"integer"},
+		{title:"Clan P NFs", dataIndx: "pNFCount", width:60, dataType:"integer"},
 		{title:"Non-clan NFs", dataIndx: "ncNFCount", width:60, dataType:"integer"},
 		{title:"Non-clan P NFs", dataIndx: "ncpNFCount", width:60, dataType:"integer"},
 		{title:"Clan Raids", dataIndx: "raidCount", width:60, dataType:"integer"},
